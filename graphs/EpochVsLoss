@@ -1,0 +1,66 @@
+import os
+import re
+import matplotlib.pyplot as plt
+
+def get_data(data_dir):
+	# Preprocessing the raw data
+	files = []
+	files += [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('.hdf5')]
+	tuples=[]
+	for f in files:
+		loss = float(re.findall(r'\d+\.\d+', f)[0])
+		epoch = int(re.findall(r'\d+', f)[0])
+		tuples.append((epoch,loss))
+		tuples.sort(key=lambda x:x[0])
+	return tuples;
+
+
+
+
+if __name__ == "__main__":
+	data_dir = 'checkpoint_poems'
+	tuples = get_data(data_dir)
+	print(tuples)
+	#x,y = [x,y for x,y in tuples]
+	
+	plt.xlabel('Epoch')
+	plt.ylabel('Loss')
+	if data_dir[11:]=='cpp':
+		plt.title('Epoch vs Loss - Code')
+	else:
+		plt.title('Epoch vs Loss - Literature')
+
+	plt.plot(zip(*tuples), 'r-')
+	#plt.show()
+	plt.savefig(data_dir+'_EpochVLoss.png')
+	
+
+'''
+def get_data(data_dir):
+	# Preprocessing the raw data
+	files = []
+	files += [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('.hdf5')]
+	x=[]
+	y=[]
+	for f in files:
+		loss = float(re.findall(r'\d+\.\d+', f)[0])
+		epoch = int(re.findall(r'\d+', f)[0])
+		x.append(epoch)
+		y.append(loss)
+	return x,y;
+
+
+
+
+if __name__ == "__main__":
+	data_dir = 'chechpoint_poems'
+	x,y = get_data(data_dir)
+	print(x)
+	print(y)
+	plt.xlabel('Epoch')
+	plt.ylabel('Loss')
+
+	plt.plot(x,y)
+	#plt.show()
+	plt.savefig(data_dir+'_EpochVsLoss3.png')
+'''
